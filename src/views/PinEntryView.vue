@@ -2,11 +2,11 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCheckinStore } from '../stores/checkin'
-
+import { Delete, Check } from 'lucide-vue-next'
 const store = useCheckinStore()
 const router = useRouter()
 
-const digits = ref<string[]>([])
+const digits = ref < string[] > ([])
 const Keypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '⌫']
 
 
@@ -23,7 +23,7 @@ function pressKey(key: string) {
 }
 
 function goNext() {
-  router.push({ name: 'ScanId' })
+    router.push({ name: 'ScanId' })
 }
 
 const canSubmit = computed(() => digits.value.length === 6)
@@ -40,50 +40,63 @@ const displayPin = computed(() => {
 </script>
 
 <template>
-  <div class="screen">
-    <div class="card">
-
-      <!-- ANSICHT 1: Eingabe — nur solange NICHT bestätigt -->
-      <template v-if="!store.pinConfirmed">
-        <h1 class="title">Enter your Booking-PIN</h1>
-        <p class="hint">Bisher eingegeben: {{ digits.length }} Ziffern</p>
-
-        <div class="pin-display">
-          <span v-for="(char, index) in displayPin" :key="index" class="pin-char">{{ char }}</span>
-        </div>
-
-        <div class="keypad">
+    <div class="screen">
+        <div class="card">
+    
+            <!-- ANSICHT 1: Eingabe — nur solange NICHT bestätigt -->
+            <template v-if="!store.pinConfirmed">
+            <h1 class="title">Enter your Booking-PIN</h1>
+            <p class="hint">Bisher eingegeben: {{ digits.length }} Ziffern</p>
+    
+            <div class="pin-display">
+              <span v-for="(char, index) in displayPin" :key="index" class="pin-char">{{ char }}</span>
+            </div>
+    
+            <div class="keypad">
           <button
             v-for="key in Keypad"
-            :key="key"
-            @click="pressKey(key)"
-            class="key"
-            :class="{ 'key-zero': key === '0', 'key-back': key === '⌫' }"
-          >
-            {{ key }}
-          </button>
-        </div>
-
-        <button class="submit-btn" :disabled="!canSubmit" @click="submitPin">
-          Submit
-        </button>
-      </template>
-
-      <!-- ANSICHT 2: Erfolg — sobald bestätigt -->
-      <template v-else>
-        <h1 class="title">Booking-PIN<br />successful!</h1>
-        <div class="check">✓</div>
-        <button class="submit-btn" @click="goNext">next</button>
-      </template>
-
-    </div>
-  </div>
+                :key="key"
+                @click="pressKey(key)"
+                class="key"
+                :class="{ 'key-zero': key === '0', 'key-back': key === '⌫' }"
+                >
+                <Delete v-if="key === '⌫'" :size="24" :stroke-width="2.5" />
+                <span v-else>{{ key }}</span>
+                </button>
+            </div>
+    
+            <button class="submit-btn" :disabled="!canSubmit" @click="submitPin">
+              Submit
+            </button>
 </template>
 
-<style scoped>
+      <!-- ANSICHT 2: Erfolg — sobald bestätigt -->
+        <template v-else>
+            <h1 class="title">
+                Booking-PIN<br />successful!</h1>
+            <div class="check">
+                <Check :size="48" :stroke-width="3" />
+            </div>
+            
+            <button class="submit-btn" @click="goNext">next</button>
+        </template>
+
+            </div>
+        </div>
+        </template>
+
+        <style scoped>
+
 .key-zero {
     grid-column: 2;
     /* setzt die Null in die mittlere Spalte */
+}
+
+.pin-char {
+    display: inline-block;
+        font-family: 'Inter', sans-serif;
+
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .screen {
@@ -109,6 +122,7 @@ const displayPin = computed(() => {
     color: var(--color-text);
     font-size: 1.5rem;
     text-align: center;
+    font-family: 'Inter', sans-serif;
     margin-bottom: 8px;
     hyphens: none;
     white-space: nowrap;
@@ -123,25 +137,35 @@ const displayPin = computed(() => {
 }
 
 .check {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: #8fc49a;
-  color: #fdfcf7;
-  font-size: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px 0 32px;
-  animation: pop-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #2c895a;
+    color: #fdfcf7;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 32px;
+    animation: pop-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 @keyframes pop-in {
-  0%   { transform: scale(0); opacity: 0; }
-  70%  { transform: scale(1.15); }
-  100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .keypad {
+    font-family: 'Inter', sans-serif;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
@@ -150,6 +174,8 @@ const displayPin = computed(() => {
 }
 
 .key {
+        font-family: 'Inter', sans-serif;
+
     background: linear-gradient(160deg, #35603e, #2a4d32);
     color: #fdfcf7;
     border: none;
@@ -161,25 +187,30 @@ const displayPin = computed(() => {
     box-shadow: 0 4px 10px rgba(47, 82, 54, 0.25);
     transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .submit-btn {
-  background: var(--color-primary);
-  color: #fdfcf7;
-  margin-top: 24px;
-  border: none;
-  border-radius: 999px;
-  padding: 14px 40px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 24px;
-  transition: opacity 0.2s ease, transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Inter', sans-serif;
+
+    background: var(--color-primary);
+    color: #fdfcf7;
+    margin-top: 24px;
+    border: none;
+    border-radius: 999px;
+    padding: 20px 50px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 24px;
+    transition: opacity 0.2s ease, transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .submit-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+    opacity: 0.4;
+    cursor: not-allowed;
 }
+
 .submit-btn:not(:disabled):active {
-  transform: scale(0.96);
+    transform: scale(0.96);
 }
 
 .key:hover {
@@ -196,32 +227,33 @@ const displayPin = computed(() => {
     transform: scale(0.92);
 }
 
-
 .submit-btn {
-  background: var(--color-primary);
-  color: #fdfcf7;
-  border: none;
-  border-radius: 999px;
-  padding: 14px 40px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 24px;
-  transition: opacity 0.2s ease, transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--color-primary);
+    color: #fdfcf7;
+    border: none;
+    border-radius: 999px;
+    padding: 20px 50px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 24px;
+    transition: opacity 0.2s ease, transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .submit-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+    opacity: 0.4;
+    cursor: not-allowed;
 }
+
 .submit-btn:not(:disabled):active {
-  transform: scale(0.96);
+    transform: scale(0.96);
 }
 
 /* PIN-Anzeige — der Star des Screens */
 
 .pin-display {
     position: relative;
-    background: linear-gradient(145deg, #fdfcf7, #f0ede0);
+    background: linear-gradient(145deg, #c7ee9e, #d1dca2);
     border: 2px solid transparent;
     border-radius: 18px;
     padding: 20px 28px;
@@ -238,49 +270,63 @@ const displayPin = computed(() => {
 /* wandernder Lichtstreifen quer über das Feld */
 
 .pin-display::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(
-    100deg,
-    transparent,
-    rgba(255, 255, 255, 0.5),
-    transparent
-  );
-  animation: sweep 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient( 100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: sweep 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes sweep {
-  0%   { left: -60%; }
-  20%  { left: 140%; }
-  100% { left: 140%; }
+    0% {
+        left: -60%;
+    }
+    20% {
+        left: 140%;
+    }
+    100% {
+        left: 140%;
+    }
 }
 
 @keyframes input-glow {
-  0%, 100% {
-    box-shadow: inset 0 2px 6px rgba(47, 82, 54, 0.08), 0 8px 24px rgba(47, 82, 54, 0.10);
-  }
-  50% {
-    box-shadow: inset 0 2px 6px rgba(47, 82, 54, 0.08), 0 12px 32px rgba(47, 82, 54, 0.16);
- }
+    0%,
+    100% {
+        box-shadow: inset 0 2px 6px rgba(47, 82, 54, 0.08), 0 8px 24px rgba(47, 82, 54, 0.10);
+    }
+    50% {
+        box-shadow: inset 0 2px 6px rgba(47, 82, 54, 0.08), 0 12px 32px rgba(47, 82, 54, 0.16);
+    }
 }
 
 @keyframes pop-char {
-  0%   { transform: translateY(6px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+    0% {
+        transform: translateY(6px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
+
 .pin-char:not(:empty) {
-  animation: pop-char 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: pop-char 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
 @keyframes pop-in {
-  0%   { transform: scale(0.7); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
-
-
 
 .pin-char {
     display: inline-block;
@@ -292,6 +338,4 @@ const displayPin = computed(() => {
 .pin-char:not(:empty) {
     animation: pop-char 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-
 </style>
