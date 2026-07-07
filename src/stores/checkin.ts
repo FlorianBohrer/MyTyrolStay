@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 // 'checkin' ist die eindeutige ID dieses Stores.
 export const useCheckinStore = defineStore('checkin', () => {
@@ -14,6 +14,9 @@ export const useCheckinStore = defineStore('checkin', () => {
     // (später: hier käme der echte Backend-Call zur Verifizierung)
   }
 
+  // Computed
+  const canSubmitPin = computed(() => bookingPin.value.length === 6)
+
   // Alles, was Komponenten nutzen sollen, muss zurückgegeben werden
-  return { bookingPin, pinConfirmed, submitPin }
+  return { bookingPin, pinConfirmed, submitPin, canSubmitPin }
 })
